@@ -18,7 +18,6 @@ const App = () => {
    }, 
    []);
 
-const App = () => {
    return (
       <div>
          <NavBar />
