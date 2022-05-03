@@ -3095,10 +3095,10 @@
   "resolved" "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.124.tgz"
   "version" "1.4.124"
 
-"electron@^9.0.0":
-  "integrity" "sha512-+a3KegLvQXVjC3b6yBWwZmtWp3tHf9ut27yORAWHO9JRFtKfNf88fi1UvTPJSW8R0sUH7ZEdzN6A95T22KGtlA=="
-  "resolved" "https://registry.npmjs.org/electron/-/electron-9.0.2.tgz"
-  "version" "9.0.2"
+"electron@^8.2.5":
+  "integrity" "sha512-LxSCUwmlfJtRwthd3ofpYaZ+1C2hQSW8Ep1DD9K3VbnDItO+kb3t1z35daJgAab78j54aOwo9gMxJtvU0Ftj6w=="
+  "resolved" "https://registry.npmjs.org/electron/-/electron-8.2.5.tgz"
+  "version" "8.2.5"
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"

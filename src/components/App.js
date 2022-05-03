@@ -6,7 +6,6 @@ import Queue from './Queue';
 import { ipcRenderer } from 'electron';
 
 const App = () => {
-
    const [music, setMusic] = useState([]);
 
    useEffect(() => {
@@ -15,16 +14,14 @@ const App = () => {
          // console.log(JSON.parse(songs));
          setMusic(JSON.parse(songs));
       });
-   }, 
-   []);
+   }, []);
 
-const App = () => {
    return (
       <div>
          <NavBar />
          <MainWindow />
          <Queue />
-         <Player/>
+         <Player />
       </div>
    );
 };
