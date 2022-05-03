@@ -1,5 +1,6 @@
 import React from 'react';
 import MainWindow from './MainWindow';
+import Player from './player';
 import NavBar from './NavBar';
 
 const App = () => {
@@ -7,6 +8,8 @@ const App = () => {
       <div>
          <NavBar />
          <MainWindow />
+         //queue
+         <Player/>
       </div>
    );
 };
