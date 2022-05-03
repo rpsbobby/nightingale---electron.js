@@ -1,13 +1,16 @@
-import React from 'react';
-import MainWindow from './MainWindow';
-import Player from './player';
-import NavBar from './NavBar';
-import Queue from './Queue';
+import React, { useEffect, useState } from 'react';
 import { ipcRenderer } from 'electron';
+import MainWindow from './components/MainWindow';
+import NavBar from './components/NavBar';
+import Queue from './components/Queue';
+import Player from './components/Player';
+import { Container } from 'react-bootstrap';
 
 const App = () => {
    const [music, setMusic] = useState([]);
    const [queue, setQueue] = useState([]);
+   const [favorites, setFavorites] = useState([]);
+
    const [nextSong, setNextSong] = useState('');
 
    const [play, setPlay] = useState();
@@ -18,6 +21,15 @@ const App = () => {
       if (nextSong === '') {
          setNextSong(id);
       }
+   };
+
+   const addToFavorites = (id) => {
+      setFavorites([...favorites, music[id]]);
+      console.log(favorites);
+   };
+
+   const playSong = (id) => {
+      setNextSong(id);
    };
 
    const playNextSongFromQueue = () => {
@@ -36,10 +48,6 @@ const App = () => {
       setQueue(temp);
    };
 
-   const playSong = (id) => {
-      setNextSong(id);
-   };
-
    useEffect(() => {}, [nextSong]);
 
    useEffect(() => {
@@ -53,17 +61,17 @@ const App = () => {
    return (
       <div>
          <NavBar />
-         <MainWindow 
-         music={music}
-               addToQueue={addToQueue}
-               playSong={playSong}
+         <MainWindow
+            music={music}
+            addToQueue={addToQueue}
+            playSong={playSong}
          />
          <Queue queue={queue} deleteFromQueue={deleteFromQueue} />
-         <Player 
-           music={music}
-           id={nextSong}
-           playNextSongFromQueue={playNextSongFromQueue}
-           />
+         <Player
+            music={music}
+            id={nextSong}
+            playNextSongFromQueue={playNextSongFromQueue}
+         />
       </div>
    );
 };

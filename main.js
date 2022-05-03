@@ -1,6 +1,7 @@
 const path = require('path');
 const url = require('url');
 const { app, BrowserWindow, ipcMain } = require('electron');
+const fs = require('fs');
 
 let mainWindow;
 const songs = [];
@@ -72,9 +73,10 @@ const getSongsFromTheFile = async (folderPath) => {
    if (songs.length === 0) {
       fs.readdirSync(folderPath).forEach((file, index) => {
          let songPath = path.resolve(musicFolderPath, `${file}`);
-         songs.push({ songPath, id: index });
+         songs.push({ songPath, id: index, favorite: false });
       });
    }
+   console.log(songs);
 };
 
 // send songs to the client side
