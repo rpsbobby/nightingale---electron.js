@@ -59,19 +59,26 @@ const App = () => {
    }, []);
 
    return (
-      <div>
-         <NavBar />
-         <MainWindow
-            music={music}
-            addToQueue={addToQueue}
-            playSong={playSong}
-         />
-         <Queue queue={queue} deleteFromQueue={deleteFromQueue} />
-         <Player
-            music={music}
-            id={nextSong}
-            playNextSongFromQueue={playNextSongFromQueue}
-         />
+      <div className="col">
+         <div className="row">
+            <NavBar />
+         </div>
+         <div className="row">
+            <MainWindow
+               music={music}
+               addToQueue={addToQueue}
+               playSong={playSong}
+               addToFavorites={addToFavorites}
+            />
+            <Queue queue={queue} deleteFromQueue={deleteFromQueue} />
+         </div>
+         <div className="row">
+            <Player
+               music={music}
+               id={nextSong}
+               playNextSongFromQueue={playNextSongFromQueue}
+            />
+         </div>
       </div>
    );
 };
