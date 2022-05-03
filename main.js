@@ -1,8 +1,9 @@
 const path = require('path');
 const url = require('url');
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 
 let mainWindow;
+const songs = [];
 
 let isDev = false;
 
@@ -46,19 +47,6 @@ function createMainWindow() {
    // Don't show until we are ready and loaded
    mainWindow.once('ready-to-show', () => {
       mainWindow.show();
-
-      // Open devtools if dev
-      if (isDev) {
-         const {
-            default: installExtension,
-            REACT_DEVELOPER_TOOLS,
-         } = require('electron-devtools-installer');
-
-         installExtension(REACT_DEVELOPER_TOOLS).catch((err) =>
-            console.log('Error loading React DevTools: ', err)
-         );
-         mainWindow.webContents.openDevTools();
-      }
    });
 
    mainWindow.on('closed', () => (mainWindow = null));
@@ -76,6 +64,23 @@ app.on('activate', () => {
    if (mainWindow === null) {
       createMainWindow();
    }
+});
+
+const getSongsFromTheFile = async (folderPath) => {
+   console.log('getting files....');
+   const musicFolderPath = path.resolve(__dirname, 'music');
+   if (songs.length === 0) {
+      fs.readdirSync(folderPath).forEach((file, index) => {
+         let songPath = path.resolve(musicFolderPath, `${file}`);
+         songs.push({ songPath, id: index });
+      });
+   }
+};
+
+// send songs to the client side
+ipcMain.on('get:music', async () => {
+   await getSongsFromTheFile(path.join(__dirname, 'music'));
+   mainWindow.webContents.send('send:music', JSON.stringify(songs));
 });
 
 // Stop error
