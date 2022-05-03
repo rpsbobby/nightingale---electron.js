@@ -7,6 +7,12 @@ import { ipcRenderer } from 'electron';
 
 const App = () => {
    const [music, setMusic] = useState([]);
+   const [queue, setQueue] = useState([]);
+
+   const deleteFromQueue = (id) => {
+      const temp = queue.filter((song) => song.id !== id);
+      setQueue(temp);
+   };
 
    useEffect(() => {
       ipcRenderer.send('get:music');
@@ -20,7 +26,7 @@ const App = () => {
       <div>
          <NavBar />
          <MainWindow />
-         <Queue />
+         <Queue queue={queue} deleteFromQueue={deleteFromQueue} />
          <Player />
       </div>
    );
