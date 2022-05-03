@@ -1,9 +1,12 @@
 import React from 'react';
+import MainWindow from './MainWindow';
+import NavBar from './NavBar';
 
 const App = () => {
    return (
-      <div className="app">
-         <p>Hello World</p>
+      <div>
+         <NavBar />
+         <MainWindow />
       </div>
    );
 };
