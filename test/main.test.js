@@ -37,4 +37,10 @@ describe('Application launch', function () {
       const arrayOfSongs = app.client.webContents.on('send:music');
       assert(arrayOfSongs != null);
    });
+
+   it('Should fetch users settings: ', async () => {
+      await app.client.waitUntilWindowLoaded();
+      const arrayOfFavorites = app.client.webContents.on('send:favorites');
+      assert(arrayOfFavorites !== null);
+   });
 });

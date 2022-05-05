@@ -69,7 +69,6 @@ function createMainWindow() {
          // listen for saving favorites
          ipcMain.on('save:favorites', (e, fav) => {
             // save new favorites and update songs with existing favorites
-            console.log('saving settings');
             store.set('favorites', JSON.parse(fav));
          });
       }
@@ -122,7 +121,6 @@ const updateFavorites = () => {
 
 // send songs to the client side
 ipcMain.on('get:music', async () => {
-   console.log('get music called');
    await getSongsFromTheFile(path.join(__dirname, 'music'));
    mainWindow.webContents.send('send:music', JSON.stringify(songs));
 });
