@@ -23,6 +23,7 @@ function createMainWindow() {
       icon: `${__dirname}/assets/icon.png`,
       webPreferences: {
          nodeIntegration: true,
+         webSecurity: false,
       },
    });
 
@@ -81,6 +82,7 @@ const getSongsFromTheFile = async (folderPath) => {
 
 // send songs to the client side
 ipcMain.on('get:music', async () => {
+   console.log('get music called');
    await getSongsFromTheFile(path.join(__dirname, 'music'));
    mainWindow.webContents.send('send:music', JSON.stringify(songs));
 });

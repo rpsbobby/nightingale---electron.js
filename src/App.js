@@ -53,7 +53,7 @@ const App = () => {
    useEffect(() => {
       ipcRenderer.send('get:music');
       ipcRenderer.on('send:music', (e, songs) => {
-         // console.log(JSON.parse(songs));
+         console.log(JSON.parse(songs));
          setMusic(JSON.parse(songs));
       });
    }, []);
