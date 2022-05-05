@@ -10,31 +10,29 @@ body {
 
 .bccard{
    background-color: #1e1e1e;
-   height:600px;
+   height:60rem;
    overflow-y: scroll;
    
 }
 
 .bcqueue{
    background-color: #1e1e1e;
-   height:600px;
+   height:60rem;
    overflow-y: scroll;
 }
 
 .bcnav{
-   background-color: #3c3c3c;
+   background-image: linear-gradient(to top, rgb(83, 83, 83, 0), rgb(37, 124, 23));
+   height: 80px;
 }
 
 .bcplayer{
    background-color: #3c3c3c;
-   }
+   background-image: linear-gradient(to top, rgb(83, 83, 83, 0), rgb(37, 124, 23));
+}
 
 .bgimg{   
-   width: fit-content;
-   height: fit-content;
-   background-color: #3c546c;
-   /* background-image: url(../src/imgs/bars.gif); */
-   color: rgb(0, 0, 0); 
+   color: white;
 }
 
 .card2 {
@@ -56,8 +54,8 @@ body {
    color: white;
 }
 
- .wave{
+ .icon{
    width: auto;
-   height: 200px;
+   text-align: left;
  }
 
