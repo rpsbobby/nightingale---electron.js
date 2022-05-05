@@ -24,8 +24,11 @@ const App = () => {
    };
 
    const addToFavorites = (id) => {
-      setFavorites([...favorites, music[id]]);
-      console.log(favorites);
+      setFavorites([...favorites, id]);
+      //send favorites to the main process to be saved
+      ipcRenderer.send('save:favorites', JSON.stringify(favorites));
+      // update music with newest favorites
+      getMusic();
    };
 
    const playSong = (id) => {
@@ -51,12 +54,16 @@ const App = () => {
    useEffect(() => {}, [nextSong]);
 
    useEffect(() => {
+      getMusic();
+   }, []);
+
+   const getMusic = () => {
       ipcRenderer.send('get:music');
       ipcRenderer.on('send:music', (e, songs) => {
          console.log(JSON.parse(songs));
          setMusic(JSON.parse(songs));
       });
-   }, []);
+   };
 
    return (
       <div className="col">

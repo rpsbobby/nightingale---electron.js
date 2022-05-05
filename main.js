@@ -2,9 +2,19 @@ const path = require('path');
 const url = require('url');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
+const Store = require('./Store');
 
 let mainWindow;
 const songs = [];
+let favorites;
+
+// user settings
+const store = new Store({
+   configName: 'user-favorites',
+   settings: {
+      favorites: [],
+   },
+});
 
 let isDev = false;
 
@@ -54,7 +64,11 @@ function createMainWindow() {
    mainWindow.on('closed', () => (mainWindow = null));
 }
 
-app.on('ready', createMainWindow);
+app.on('ready', () => {
+   // initialise user's favorite
+   favorites = store.get('favorites');
+   createMainWindow();
+});
 
 app.on('window-all-closed', () => {
    if (process.platform !== 'darwin') {
@@ -77,7 +91,18 @@ const getSongsFromTheFile = async (folderPath) => {
          songs.push({ songPath, id: index, favorite: false });
       });
    }
-   console.log(songs);
+   // adding saved favorites to the song property
+   updateFavorites();
+};
+
+const updateFavorites = () => {
+   // fetch the newest version of favorites
+   favorites = store.get('favorites');
+   songs.forEach((song) => {
+      if (favorites.includes(song.id)) {
+         song.favorite = true;
+      }
+   });
 };
 
 // send songs to the client side
@@ -87,5 +112,12 @@ ipcMain.on('get:music', async () => {
    mainWindow.webContents.send('send:music', JSON.stringify(songs));
 });
 
+// listen for saving favorites
+ipcMain.on('save:favorites', (e, data) => {
+   store.set('favorites', JSON.parse(data));
+   // updateFavorites();
+
+   // console.log(songs);
+});
 // Stop error
 app.allowRendererProcessReuse = true;

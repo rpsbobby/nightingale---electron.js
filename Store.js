@@ -8,7 +8,7 @@ class Store {
          'userData'
       );
       this.path = path.join(userDataPath, options.configName + '.json');
-      this.data = parseDataFile(this.path, options.defaults);
+      this.data = parseDataFile(this.path, options.settings);
    }
 
    get(key) {
@@ -20,11 +20,11 @@ class Store {
    }
 }
 
-function parseDataFile(filePath, defaults) {
+function parseDataFile(filePath, settings) {
    try {
       return JSON.parse(fs.readFileSync(filePath));
    } catch (err) {
-      return defaults;
+      return settings;
    }
 }
 
