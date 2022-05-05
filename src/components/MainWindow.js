@@ -9,12 +9,13 @@ import {
 import path from 'path';
 import '../App.css';
 
-export const MainWindow = ({ music, addToQueue, playSong, addToFavorites }) => {
-   const resolveTheName = (str) => {
-      let arr = string.split('\\');
-      let songName = arr[arr.length - 1];
-      return songName.slice(-4);
-   };
+export const MainWindow = ({
+   music,
+   addToQueue,
+   playSong,
+   addToFavorites,
+   removeFromFavorites,
+}) => {
    return (
       <Container className="border bccard col-9 pt-5 pb-5 px-4">
          {music.map((song) => (
@@ -60,7 +61,7 @@ export const MainWindow = ({ music, addToQueue, playSong, addToFavorites }) => {
                         type="button"
                         className="btn btn-light p-3 rounded-10 border"
                         onClick={(e) => {
-                           addToFavorites(song.id);
+                           removeFromFavorites(song.id);
                         }}
                      >
                         <IoIosStar />

@@ -25,10 +25,15 @@ const App = () => {
 
    const addToFavorites = (id) => {
       setFavorites([...favorites, id]);
-      //send favorites to the main process to be saved
-      ipcRenderer.send('save:favorites', JSON.stringify(favorites));
-      // update music with newest favorites
-      getMusic();
+      updateFavorites();
+   };
+
+   const removeFromFavorites = (id) => {
+      const temp = favorites;
+      // filter favorites -> return value if doesn't match id
+      temp.filter((element) => element !== id);
+      setFavorites(temp);
+      updateFavorites();
    };
 
    const playSong = (id) => {
@@ -52,6 +57,10 @@ const App = () => {
    };
 
    useEffect(() => {}, [nextSong]);
+   useEffect(() => {
+      getMusic();
+   }, [favorites]);
+   useEffect(() => {}, [music]);
 
    useEffect(() => {
       getMusic();
@@ -65,6 +74,13 @@ const App = () => {
       });
    };
 
+   const updateFavorites = () => {
+      //send favorites to the main process to be saved
+      ipcRenderer.send('save:favorites', JSON.stringify(favorites));
+      // update music with newest favorites
+      getMusic();
+   };
+
    return (
       <div className="col">
          <div className="row">
@@ -76,6 +92,7 @@ const App = () => {
                addToQueue={addToQueue}
                playSong={playSong}
                addToFavorites={addToFavorites}
+               removeFromFavorites={removeFromFavorites}
             />
             <Queue queue={queue} deleteFromQueue={deleteFromQueue} />
          </div>
