@@ -35,6 +35,7 @@ function createMainWindow() {
          nodeIntegration: true,
          webSecurity: false,
       },
+      // frame: false,
    });
 
    let indexPath;
@@ -61,7 +62,24 @@ function createMainWindow() {
       mainWindow.show();
    });
 
-   mainWindow.on('closed', () => (mainWindow = null));
+   mainWindow.on('close', () => {
+      // e.preventDefault();
+      if (mainWindow) {
+         // save newest favorites before closed
+         mainWindow.webContents.send('get:favorites:onclose');
+         // listen for saving favorites
+         ipcMain.on('save:favorites', (e, fav) => {
+            // save new favorites and update songs with existing favorites
+            console.log('saving settings');
+            console.log(fav);
+            store.set('favorites', JSON.parse(fav));
+         });
+      }
+   });
+
+   mainWindow.on('closed', () => {
+      mainWindow = null;
+   });
 }
 
 app.on('ready', () => {
@@ -93,6 +111,7 @@ const getSongsFromTheFile = async (folderPath) => {
    }
    // adding saved favorites to the song property
    updateFavorites();
+   console.log(songs);
 };
 
 const updateFavorites = () => {
@@ -112,12 +131,10 @@ ipcMain.on('get:music', async () => {
    mainWindow.webContents.send('send:music', JSON.stringify(songs));
 });
 
-// listen for saving favorites
-ipcMain.on('save:favorites', (e, data) => {
-   store.set('favorites', JSON.parse(data));
-   // updateFavorites();
-
-   // console.log(songs);
+ipcMain.on('get:favorites', () => {
+   favorites = store.get('favorites');
+   mainWindow.webContents.send('send:favorites', JSON.stringify(favorites));
 });
+
 // Stop error
 app.allowRendererProcessReuse = true;

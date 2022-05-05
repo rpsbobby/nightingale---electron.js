@@ -1,84 +1,134 @@
 import React, { useEffect, useState } from 'react';
 import { ipcRenderer } from 'electron';
-import MainWindow from './components/MainWindow';
 import NavBar from './components/NavBar';
+import Card from './components/Card';
 import Queue from './components/Queue';
 import Player from './components/Player';
-import { Container } from 'react-bootstrap';
 
 const App = () => {
+   // props
    const [music, setMusic] = useState([]);
    const [queue, setQueue] = useState([]);
    const [favorites, setFavorites] = useState([]);
-
    const [nextSong, setNextSong] = useState('');
 
-   const [play, setPlay] = useState();
+   useEffect(() => {
+      getMusic();
+      getFavorites();
+   }, []);
+   // use effect hooks
+   useEffect(() => {}, [nextSong]);
 
-   const addToQueue = (id) => {
-      console.log(nextSong);
-      setQueue([...queue, music[id]]);
-      if (nextSong === '') {
-         setNextSong(id);
-      }
-   };
+   // useEffect(() => {
+   //    updateMusic();
+   // }, favorites);
+   useEffect(() => {
+      // updateMusic();
+   }, [favorites]);
+   useEffect(() => {}, [music]);
+   // when window loads -> only once
 
+   // EVENT HANDLERS
+
+   // favorites
    const addToFavorites = (id) => {
-      setFavorites([...favorites, id]);
-      updateFavorites();
+      console.log('added to favorite');
+      music.map((song) => {
+         if (song.id === id) {
+            song.favorite = true;
+         }
+      });
+      if (!favorites.includes(id)) {
+         setFavorites([...favorites, id]);
+      }
+      setMusic([...music]);
    };
 
    const removeFromFavorites = (id) => {
-      const temp = favorites;
+      console.log('remove from favorites');
+      music.map((song) => {
+         if (song.id === id) {
+            song.favorite = false;
+         }
+      });
+      setFavorites(favorites.filter((element) => element !== id));
+      setMusic([...music]);
       // filter favorites -> return value if doesn't match id
-      temp.filter((element) => element !== id);
-      setFavorites(temp);
-      updateFavorites();
+
+      // console.log(favorites);
+      // updateMusic();
+      // console.log(music);
    };
 
+   const updateMusic = () => {
+      // music.map((song) => {
+      //    if (favorites.includes(song.id)) {
+      //       song.favorite = true;
+      //    }
+      // });
+      // const temp = music;
+      setMusic(
+         music.map((song) => {
+            if (favorites.includes(song.id)) {
+               song.favorite = true;
+            }
+         })
+      );
+   };
+
+   // play next song with button click or from the queue
    const playSong = (id) => {
       setNextSong(id);
    };
 
    const playNextSongFromQueue = () => {
-      console.log(nextSong);
-      console.log(queue[0].id);
       if (nextSong === queue[0].id) {
          setNextSong('');
       }
       setNextSong(queue[0].id);
       setQueue(queue.slice(1));
-      console.log(nextSong);
+      // console.log(nextSong);
    };
 
+   // queue add and delete
+   const addToQueue = (id) => {
+      if (!queue.includes(id)) {
+         setQueue([...queue, music[id]]);
+      }
+      if (nextSong === '') {
+         setNextSong(id);
+      }
+   };
    const deleteFromQueue = (id) => {
       const temp = queue.filter((song) => song.id !== id);
       setQueue(temp);
    };
 
-   useEffect(() => {}, [nextSong]);
-   useEffect(() => {
-      getMusic();
-   }, [favorites]);
-   useEffect(() => {}, [music]);
-
-   useEffect(() => {
-      getMusic();
-   }, []);
-
+   // ipcRenderer methods
    const getMusic = () => {
       ipcRenderer.send('get:music');
       ipcRenderer.on('send:music', (e, songs) => {
-         console.log(JSON.parse(songs));
          setMusic(JSON.parse(songs));
       });
    };
 
-   const updateFavorites = () => {
-      //send favorites to the main process to be saved
+   const getFavorites = () => {
+      ipcRenderer.send('get:favorites');
+      ipcRenderer.on('send:favorites', (e, fav) => {
+         setFavorites(JSON.parse(fav));
+      });
+   };
+
+   ipcRenderer.on('get:favorites:onclose', () => {
       ipcRenderer.send('save:favorites', JSON.stringify(favorites));
-      // update music with newest favorites
-      getMusic();
+   });
+
+   const handleFavorite = (id) => {
+      if (favorites.includes(id)) {
+         removeFromFavorites(id);
+      } else {
+         addToFavorites(id);
+      }
    };
 
    return (
@@ -87,13 +137,18 @@ const App = () => {
             <NavBar />
          </div>
          <div className="row">
-            <MainWindow
-               music={music}
-               addToQueue={addToQueue}
-               playSong={playSong}
-               addToFavorites={addToFavorites}
-               removeFromFavorites={removeFromFavorites}
-            />
+            <div className="border bccard col-9 pt-5 pb-5 px-4">
+               {music.map((song) => (
+                  <Card
+                     id={song.id}
+                     songPath={song.songPath}
+                     favorite={song.favorite}
+                     handleFavorite={handleFavorite}
+                     addToQueue={addToQueue}
+                     playSong={playSong}
+                  />
+               ))}
+            </div>
             <Queue queue={queue} deleteFromQueue={deleteFromQueue} />
          </div>
          <div className="row">
