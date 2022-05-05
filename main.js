@@ -63,15 +63,13 @@ function createMainWindow() {
    });
 
    mainWindow.on('close', () => {
-      // e.preventDefault();
       if (mainWindow) {
-         // save newest favorites before closed
+         // save newest favorites before closed -> send message to renderer process to obtain favorites array
          mainWindow.webContents.send('get:favorites:onclose');
          // listen for saving favorites
          ipcMain.on('save:favorites', (e, fav) => {
             // save new favorites and update songs with existing favorites
             console.log('saving settings');
-            console.log(fav);
             store.set('favorites', JSON.parse(fav));
          });
       }
@@ -83,15 +81,13 @@ function createMainWindow() {
 }
 
 app.on('ready', () => {
-   // initialise user's favorite
+   // initialise user's favorite if not exist returns, returns empty array
    favorites = store.get('favorites');
    createMainWindow();
 });
 
 app.on('window-all-closed', () => {
-   if (process.platform !== 'darwin') {
-      app.quit();
-   }
+   app.quit();
 });
 
 app.on('activate', () => {
@@ -101,7 +97,7 @@ app.on('activate', () => {
 });
 
 const getSongsFromTheFile = async (folderPath) => {
-   console.log('getting files....');
+   // get songs from music folder, must be in root folder of the project
    const musicFolderPath = path.resolve(__dirname, 'music');
    if (songs.length === 0) {
       fs.readdirSync(folderPath).forEach((file, index) => {
@@ -111,13 +107,13 @@ const getSongsFromTheFile = async (folderPath) => {
    }
    // adding saved favorites to the song property
    updateFavorites();
-   console.log(songs);
 };
 
 const updateFavorites = () => {
    // fetch the newest version of favorites
    favorites = store.get('favorites');
    songs.forEach((song) => {
+      // change  songs property if ids match
       if (favorites.includes(song.id)) {
          song.favorite = true;
       }
@@ -131,8 +127,11 @@ ipcMain.on('get:music', async () => {
    mainWindow.webContents.send('send:music', JSON.stringify(songs));
 });
 
+// listen to an event
 ipcMain.on('get:favorites', () => {
+   // fetch favorites from the file
    favorites = store.get('favorites');
+   // send to web contents
    mainWindow.webContents.send('send:favorites', JSON.stringify(favorites));
 });
 

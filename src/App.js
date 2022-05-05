@@ -16,64 +16,30 @@ const App = () => {
       getMusic();
       getFavorites();
    }, []);
-   // use effect hooks
-   useEffect(() => {}, [nextSong]);
-
-   // useEffect(() => {
-   //    updateMusic();
-   // }, favorites);
-   useEffect(() => {
-      // updateMusic();
-   }, [favorites]);
-   useEffect(() => {}, [music]);
-   // when window loads -> only once
 
    // EVENT HANDLERS
-
    // favorites
    const addToFavorites = (id) => {
-      console.log('added to favorite');
-      music.map((song) => {
-         if (song.id === id) {
-            song.favorite = true;
-         }
-      });
+      updateMusic(id, true);
+      // add to favorites array
       if (!favorites.includes(id)) {
          setFavorites([...favorites, id]);
       }
-      setMusic([...music]);
    };
 
    const removeFromFavorites = (id) => {
-      console.log('remove from favorites');
-      music.map((song) => {
-         if (song.id === id) {
-            song.favorite = false;
-         }
-      });
-      setFavorites(favorites.filter((element) => element !== id));
-      setMusic([...music]);
+      updateMusic(id, false);
       // filter favorites -> return value if doesn't match id
-
-      // console.log(favorites);
-      // updateMusic();
-      // console.log(music);
+      setFavorites(favorites.filter((element) => element !== id));
    };
 
-   const updateMusic = () => {
-      // music.map((song) => {
-      //    if (favorites.includes(song.id)) {
-      //       song.favorite = true;
-      //    }
-      // });
-      // const temp = music;
-      setMusic(
-         music.map((song) => {
-            if (favorites.includes(song.id)) {
-               song.favorite = true;
-            }
-         })
-      );
+   const updateMusic = (id, bool) => {
+      music.map((song) => {
+         if (song.id === id) {
+            song.favorite = bool;
+         }
+      });
+      setMusic([...music]);
    };
 
    // play next song with button click or from the queue
@@ -87,7 +53,6 @@ const App = () => {
       }
       setNextSong(queue[0].id);
       setQueue(queue.slice(1));
-      // console.log(nextSong);
    };
 
    // queue add and delete
