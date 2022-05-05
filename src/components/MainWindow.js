@@ -20,7 +20,7 @@ export const MainWindow = ({
       <Container className="border bccard col-9 pt-5 pb-5 px-4">
          {music.map((song) => (
             <div
-               className="card2 bgimg mt-4 col-3 p-2 shadow-md rounded text-center"
+               className="card2 bgimg mt-5 col-3 p-2 shadow-md rounded text-center"
                key={song.id}
             >
                <img
