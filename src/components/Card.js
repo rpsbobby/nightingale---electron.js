@@ -22,7 +22,7 @@ function Card({
          >
             <img
                className="bird"
-               src="https://cdn-icons-png.flaticon.com/512/3362/3362384.png"
+               src="https://imgur.com/2nANDm9.png"
                width="50px"
                height="50px"
             />
